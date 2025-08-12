@@ -22,6 +22,8 @@ from .db.models.noticia import Noticia
 from .db.models.refresh_token import RefreshToken
 from .db.models.password_reset import PasswordResetToken
 from .db.models.iniciosesion import InicioSesion
+from .core.cors import get_cors_origins, get_cors_headers, get_cors_methods
+from .core.middleware import CORSMiddlewareCustom
 
 app = FastAPI(
     title="ASODAT API",
@@ -30,16 +32,22 @@ app = FastAPI(
 )
 
 # ------------------ CORS ------------------
-raw_origins = os.getenv("CORS_ORIGINS", "*")
-origins = ["*"] if raw_origins.strip() == "*" else [o.strip()
-                                                    for o in raw_origins.split(",") if o.strip()]
+# Usar middleware personalizado para CORS más robusto
+app.add_middleware(CORSMiddlewareCustom)
+
+# También mantener el middleware estándar de FastAPI como respaldo
+origins = get_cors_origins()
+headers = get_cors_headers()
+methods = get_cors_methods()
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=methods,
+    allow_headers=headers,
+    expose_headers=["Content-Length", "Content-Type"],
+    max_age=86400,  # 24 horas
 )
 
 # ------------------ Swagger "Authorize" (JWT Bearer) ------------------

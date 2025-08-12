@@ -15,7 +15,13 @@
     "routes": [
       {
         "src": "/api/(.*)",
-        "dest": "app/main.py"
+        "dest": "app/main.py",
+        "headers": {
+          "Access-Control-Allow-Origin": "https://asodat-l88n.vercel.app",
+          "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS, PATCH",
+          "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Requested-With, Origin, Accept",
+          "Access-Control-Allow-Credentials": "true"
+        }
       },
       {
         "src": "/docs",
@@ -24,6 +30,39 @@
       {
         "src": "/openapi.json",
         "dest": "app/main.py"
+      },
+      {
+        "src": "/auth/(.*)",
+        "dest": "app/main.py",
+        "headers": {
+          "Access-Control-Allow-Origin": "https://asodat-l88n.vercel.app",
+          "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS, PATCH",
+          "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Requested-With, Origin, Accept",
+          "Access-Control-Allow-Credentials": "true"
+        }
+      }
+    ],
+    "headers": [
+      {
+        "source": "/(.*)",
+        "headers": [
+          {
+            "key": "Access-Control-Allow-Origin",
+            "value": "https://asodat-l88n.vercel.app"
+          },
+          {
+            "key": "Access-Control-Allow-Methods",
+            "value": "GET, POST, PUT, DELETE, OPTIONS, PATCH"
+          },
+          {
+            "key": "Access-Control-Allow-Headers",
+            "value": "Content-Type, Authorization, X-Requested-With, Origin, Accept"
+          },
+          {
+            "key": "Access-Control-Allow-Credentials",
+            "value": "true"
+          }
+        ]
       }
     ]
   }
