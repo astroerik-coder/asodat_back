@@ -1,27 +1,11 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.openapi.utils import get_openapi
-import os
 
 from .routers import auth, me, socios, eliminaciones
 from .routers import aportes as aportes_router
 from .routers import reportes as reportes_router
 from .routers import validaciones
-
-from .db.session import engine, direct_engine
-from .db.base import Base
-from .db.models.usuario import Usuario
-from .db.models.socio import Socio
-from .db.models.aportes import Aportes, AportesSocios
-from .db.models.comprobante import ComprobantePago
-from .db.models.cupo import CupoSocio
-from .db.models.historial_aportes import HistorialAportes
-from .db.models.historial_carga_aportes import HistorialCargaAportes
-from .db.models.historial_eliminaciones import HistorialEliminaciones
-from .db.models.noticia import Noticia
-from .db.models.refresh_token import RefreshToken
-from .db.models.password_reset import PasswordResetToken
-from .db.models.iniciosesion import InicioSesion
 
 app = FastAPI(
     title="ASODAT API",
@@ -30,20 +14,15 @@ app = FastAPI(
 )
 
 # ------------------ CORS ------------------
-# Permitir todos los orígenes
-origins = ["*"]
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 # ------------------ Swagger "Authorize" (JWT Bearer) ------------------
-
-
 def custom_openapi():
     if app.openapi_schema:
         return app.openapi_schema
@@ -53,8 +32,7 @@ def custom_openapi():
         description="API ASODAT",
         routes=app.routes,
     )
-    openapi_schema.setdefault(
-        "components", {}).setdefault("securitySchemes", {})
+    openapi_schema.setdefault("components", {}).setdefault("securitySchemes", {})
     openapi_schema["components"]["securitySchemes"]["bearerAuth"] = {
         "type": "http",
         "scheme": "bearer",
@@ -65,7 +43,6 @@ def custom_openapi():
             op.setdefault("security", [{"bearerAuth": []}])
     app.openapi_schema = openapi_schema
     return app.openapi_schema
-
 
 app.openapi = custom_openapi
 

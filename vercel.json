@@ -1,52 +1,52 @@
 {
-    "version": 2,
-    "builds": [
-      {
-        "src": "app/main.py",
-        "use": "@vercel/python",
-        "config": {
-          "runtime": "python3.12",
-          "maxLambdaSize": "50mb",
-          "includeFiles": "app/**/*.py",
-          "installCommand": "pip install -r requirements.txt --use-pep517"
+  "version": 2,
+  "builds": [
+    {
+      "src": "app/main.py",
+      "use": "@vercel/python",
+      "config": {
+        "runtime": "python3.12",
+        "maxLambdaSize": "50mb",
+        "includeFiles": "app/**/*.py",
+        "installCommand": "pip install -r requirements.txt --use-pep517"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "app/main.py"
+    },
+    {
+      "src": "/docs",
+      "dest": "app/main.py"
+    },
+    {
+      "src": "/openapi.json",
+      "dest": "app/main.py"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET, POST, PUT, DELETE, OPTIONS, PATCH"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "Content-Type, Authorization, X-Requested-With, Origin, Accept"
+        },
+        {
+          "key": "Access-Control-Allow-Credentials",
+          "value": "true"
         }
-      }
-    ],
-    "routes": [
-      {
-        "src": "/api/(.*)",
-        "dest": "app/main.py"
-      },
-      {
-        "src": "/docs",
-        "dest": "app/main.py"
-      },
-      {
-        "src": "/openapi.json",
-        "dest": "app/main.py"
-      }
-    ],
-    "headers": [
-      {
-        "source": "/(.*)",
-        "headers": [
-          {
-            "key": "Access-Control-Allow-Origin",
-            "value": "*"
-          },
-          {
-            "key": "Access-Control-Allow-Methods",
-            "value": "GET, POST, PUT, DELETE, OPTIONS, PATCH"
-          },
-          {
-            "key": "Access-Control-Allow-Headers",
-            "value": "Content-Type, Authorization, X-Requested-With, Origin, Accept"
-          },
-          {
-            "key": "Access-Control-Allow-Credentials",
-            "value": "true"
-          }
-        ]
-      }
-    ]
-  }
+      ]
+    }
+  ]
+}
